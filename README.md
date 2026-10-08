@@ -18,6 +18,7 @@ API authentication is working.
 The configured FMC credentials are valid.
 
 The automation environment can communicate with FMC before performing changes.
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 __2. Search / Dump Access Control Rules__
@@ -168,25 +169,7 @@ The exact required column names and supported fields depend on the current scrip
 
 __Interactive Menu__
 
-When the toolkit is launched, it presents an interactive PowerShell menu similar to:
-
-===========================================
-             FMC AUTOMATION TOOLKIT
-===========================================
-
-[1] Test FMC Connection
-[2] Search/Dump Access Control Rules
-[3] Audit IPs in Rules
-[4] Export FMC Devices
-[5] Find Unused Objects
-[6] Get Full Objects
-[7] Create Rule from CSV
-[8] Block/Unblock/View Malicious IP (Dynamic Object)
-[9] Import Hosts from CSV
-[Q] Quit
-
-Select an option:
-
+When the toolkit is launched, it presents an interactive PowerShell menu:
 Enter the number corresponding to the desired operation and follow the prompts provided by the script.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
