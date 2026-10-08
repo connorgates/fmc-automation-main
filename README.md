@@ -1,385 +1,177 @@
-Cisco FMC REST API Automation Toolkit
+__FMC Automation Toolkit__
 
-A Python-based network automation suite for Cisco Secure Firewall Management Center (FMC).
+A PowerShell-based automation toolkit for managing and auditing Cisco Firepower Management Center (FMC) through the FMC API.
 
-This toolkit is designed to make common FMC administration tasks faster, easier, and more repeatable by using the FMC REST API instead of manually performing every task through the FMC web interface.
+The toolkit provides an interactive menu that brings common FMC administration, security-rule management, object management, and IP-address workflows into a single command-line interface.
 
-It can be used for:
+__Features__
 
- Device inventory and health reporting
+The toolkit currently provides the following functions:
 
- Unused object auditing
+__1. Test FMC Connection__
 
- Network object and object-group management
+Tests connectivity and authentication to the configured Cisco FMC instance.
 
- Access-control rule creation
+Use this option to verify that:
+The FMC is reachable.
+API authentication is working.
+The configured FMC credentials are valid.
 
- CSV-based bulk operations
+The automation environment can communicate with FMC before performing changes.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
- General FMC administration and automation
+__2. Search / Dump Access Control Rules__
 
- What Does This Toolkit Do?
+Searches and exports information about Access Control Rules (ACRs) configured in FMC.
 
-The toolkit provides several automation functions for managing FMC.
+This can be used to:
 
- Device Health & Inventory
+Locate rules by name or other criteria.
+Review rule configuration.
+Dump rule information for troubleshooting or auditing.
+Inspect existing rules before making changes.
+This is useful when working with large rulebases where manually searching through the FMC GUI can be time-consuming.
 
-export_devices.py
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Exports information about managed FTD devices from FMC.
+__3. Audit IPs in Rules__
 
-Information can include:
+Audits IP addresses referenced by FMC access-control rules.
+
+The toolkit can identify IPs used within rules and produce information that can be reviewed or edited through the automation workflow.
+
+Typical uses include:
+
+Finding where a specific IP is referenced.
+Reviewing IP addresses currently used by rules.
+Preparing rule changes.
+Auditing firewall configuration for outdated or incorrect IP references.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+__4. Export FMC Devices__
+
+Exports device information from FMC.
+
+This provides a convenient way to inventory managed devices and maintain an external record of the FMC environment.
+
+Depending on the configured implementation, exported information may include device-related details such as:
 
 Device name
+IP address
+Device type
+Management information
+Other FMC device attributes
 
-FTD model
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Management IP address
+__5. Find Unused Objects__
 
-Software version
+Searches FMC for objects that are no longer referenced by the configuration.
 
-Health/status information
+This can help identify configuration that may be safe to clean up, such as:
 
-The information is exported into CSV reports, making it easy to review or use in other administrative workflows.
+Unused network objects
+Unused host objects
+Unused object groups
+Other objects that are not referenced by rules or related configuration
+Important: An object being reported as unused does not automatically mean it should be deleted. Review the results before removing anything from FMC.
 
- Unused Object Audit
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-find_unused_objects.py
+__6. Get Full Objects__
 
-Searches FMC for network objects that are not currently being referenced.
+Retrieves detailed FMC object information.
 
-This can help identify:
+This is intended for situations where the abbreviated information shown in normal searches is not enough.
 
-Old objects
+It can be useful for:
 
-Objects created for previous projects
+Troubleshooting object configuration.
+Inspecting FMC API responses.
+Reviewing object attributes.
+Developing or validating additional automation.
 
-Unused hosts
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Unused networks
+__7. Create Rule from CSV__
 
-Objects that may be candidates for cleanup
+Creates an FMC Access Control Rule using information supplied in a CSV file.
 
- Important: An object being identified as unused does not automatically mean it should be deleted. Always review the results before removing configuration from FMC.
+This allows multiple rule parameters to be prepared in a spreadsheet or CSV and then imported through the toolkit rather than manually entering each value in the FMC GUI.
 
- Network Object Exporter
+A CSV-driven workflow can be useful for:
 
-get_objects.py
+Standardizing rule creation.
+Creating multiple rules consistently.
+Reducing manual configuration.
+Preparing changes in advance for review.
+Automating repetitive firewall administration.
+The exact CSV columns and accepted values depend on the implementation of the script.
 
-Exports FMC network objects into structured CSV files.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Supported object types can include:
+__8. Block / Unblock / View Malicious IP__
 
-Host objects
+Manages malicious IP addresses using an FMC Dynamic Object workflow.
 
-Subnets
+The option supports:
 
-IP ranges
+Block — Add an IP address to the designated malicious-IP dynamic object.
 
-Network objects
+Unblock — Remove an IP address from the dynamic object.
 
-Network object groups
+View — Display the IP addresses currently contained in the object.
 
-This is useful for inventory, auditing, documentation, and troubleshooting.
+This provides a faster way to manage emergency IP blocks without manually navigating through FMC object configuration.
 
- Network Object & Group Management
+A typical workflow is:
 
-The toolkit can also create network objects and network object groups directly in FMC.
+Threat IP identified
+        |
+        v
+Block IP through toolkit
+        |
+        v
+IP added to FMC Dynamic Object
+        |
+        v
+Firewall policy references the object
+        |
+        v
+Traffic from the malicious IP can be blocked
 
-This allows administrators to add objects without manually navigating through the FMC GUI for every entry.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-For example:
+__9. Import Hosts from CSV__
 
-Server Name       IP Address
------------       ----------
-WEB01             10.20.10.15
-WEB02             10.20.10.16
-DB01              10.20.20.10
+Imports host/IP information from a CSV file into FMC.
 
-These can then be created in FMC through the automation workflow.
+This is intended to simplify the creation or management of host objects when dealing with a larger number of systems.
 
-Object groups can also be created to organize multiple objects together.
+Example use cases include:
 
- Batch Rule Deployment
+Importing server inventories.
+Creating host objects from an existing spreadsheet.
+Standardizing object names and IP addresses.
+Reducing repetitive object creation through the FMC GUI.
+A typical CSV may contain information such as:
 
-create_rules.py
+Name,IP
+WEB01,192.168.1.10
+WEB02,192.168.1.11
+DB01,192.168.1.20
 
-Creates FMC Access Control Rules using information provided through CSV templates.
+The exact required column names and supported fields depend on the current script implementation.
 
-The script can resolve:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-FTD device names
+__Interactive Menu__
 
-Access-control policies
-
-Security zones
-
-Other required FMC identifiers
-
-This makes it possible to prepare firewall rules in a spreadsheet and then automatically deploy them to FMC.
-
- Requirements
-
-Before installing the toolkit, the computer should have:
-
-Requirement
-
-Purpose
-
-Windows 10/11
-
-Operating system
-
-Git
-
-Downloads and updates the toolkit
-
-Python 3.x
-
-Runs the automation scripts
-
-PowerShell
-
-Runs the launcher/setup scripts
-
-Command Prompt
-
-Used to launch the fmc command
-
-Network access to FMC
-
-Allows the toolkit to communicate with FMC
-
-FMC account
-
-Provides API access
-
- You do not need to understand Python to use the finished toolkit. Once the initial setup is complete, the normal workflow is simply opening Command Prompt and typing fmc.
-
- Initial Installation
-
-The following instructions assume this is the first time the toolkit is being installed on the computer.
-
-1️ Install Git
-
-Git is used to download the toolkit from GitHub and later retrieve updates.
-
-If Git is not already installed:
-
-Install Git for Windows.
-
-Use the default installation options.
-
-Open Command Prompt after installation.
-
-Verify Git is working:
-
-git --version
-
-You should see something similar to:
-
-git version 2.x.x
-
- If a Git version is displayed, Git is installed correctly.
-
-2️ Install Python
-
-The toolkit uses Python to communicate with the FMC REST API.
-
-Install Python 3.x for Windows.
-
-During installation, make sure the following option is enabled:
-
- Add Python to PATH
-
-After installation, open a new Command Prompt window.
-
-Verify Python:
-
-python --version
-
-You should see something similar to:
-
-Python 3.x.x
-
- If Windows says that python is not recognized, close Command Prompt and open it again.
-
-3️ Download the Toolkit from GitHub
-
-This is where Git comes in.
-
-Open Command Prompt or PowerShell.
-
-First, choose where you want to store the toolkit.
-
-For example:
-
-cd $HOME
-
-Then download the repository:
-
-git clone https://github.com/YOUR_GITHUB_USERNAME/fmc-automation.git
-
-Replace:
-
-YOUR_GITHUB_USERNAME
-
-with the GitHub account or organization that owns the repository.
-
-For example:
-
-git clone https://github.com/mycompany/fmc-automation.git
-
-Git will download the project into a folder named:
-
-fmc-automation
-
-4️ Enter the Toolkit Folder
-
-Now move into the folder you just downloaded:
-
-cd fmc-automation
-
-What does cd mean?
-
-cd = Change Directory
-
-Think of it like opening a folder in File Explorer.
-
-For example:
-
-cd fmc-automation
-
-means:
-
-"Go into the fmc-automation folder."
-
-You can confirm you are in the correct folder with:
-
-dir
-
-You should see the toolkit files.
-
-5️ Create the Python Virtual Environment
-
-The toolkit uses a virtual environment so its Python packages do not interfere with other Python applications on the computer.
-
-From inside the fmc-automation directory:
-
-python -m venv venv
-
-This creates:
-
-fmc-automation
-│
-├── venv
-├── create_rules.py
-├── export_devices.py
-├── ...
-└── README.md
-
- You normally only need to create the virtual environment once.
-
-6️ Activate the Virtual Environment
-
-In PowerShell, run:
-
-.\venv\Scripts\Activate.ps1
-
-You should now see:
-
-(venv)
-
-at the beginning of your command prompt.
-
-For example:
-
-(venv) PS C:\Users\Username\fmc-automation>
-
-The (venv) tells you that the toolkit's Python environment is active.
-
- PowerShell Execution Policy
-
-If PowerShell refuses to run the activation script, you may see an error saying that script execution is disabled.
-
-For a normal user installation, you may be able to run:
-
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-Then try again:
-
-.\venv\Scripts\Activate.ps1
-
- If this is a managed company computer and PowerShell execution policies are controlled by IT, do not bypass the organization's policy. Contact your IT administrator if necessary.
-
-7️ Install the Required Python Packages
-
-With the virtual environment activated, install the packages required by the toolkit.
-
-If the repository contains a requirements.txt file, run:
-
-pip install -r requirements.txt
-
-This is the preferred method because it installs the dependencies defined by the project.
-
-If there is no requirements.txt, install the required packages directly:
-
-pip install requests python-dotenv
-
-Verify the installed packages:
-
-pip list
-
- 8️ Configure FMC Credentials
-
-The toolkit needs information about the FMC it will connect to.
-
-The project uses a .env file so credentials do not need to be written directly into the Python scripts.
-
-A configuration may look similar to:
-
-FMC_HOST=your-fmc-hostname
-FMC_USERNAME=your-username
-FMC_PASSWORD=your-password
-
-The exact variable names must match the .env.example file included with the repository.
-
-If the repository contains:
-
-.env.example
-
-copy it:
-
-copy .env.example .env
-
-Then open .env and enter the appropriate FMC information.
-
- IMPORTANT — Protect Your Credentials
-
-Never commit .env to GitHub.
-
-The .env file contains sensitive information and should remain local to the computer running the toolkit.
-
-The repository should include .env in .gitignore.
-
- 9️ Test the Toolkit
-
-Before setting up the fmc command, test that the toolkit itself works.
-
-From the project directory, run the main toolkit Python script.
-
-For example:
-
-python <main-toolkit-script>.py
-
-Replace <main-toolkit-script>.py with the actual launcher/main Python file in the repository.
-
-The toolkit should display its menu.
-
-For example:
+When the toolkit is launched, it presents an interactive PowerShell menu similar to:
 
 ===========================================
-          FMC AUTOMATION TOOLKIT
+             FMC AUTOMATION TOOLKIT
 ===========================================
 
 [1] Test FMC Connection
@@ -389,400 +181,149 @@ For example:
 [5] Find Unused Objects
 [6] Get Full Objects
 [7] Create Rule from CSV
-[8] Block/Unblock/View Malicious IP
+[8] Block/Unblock/View Malicious IP (Dynamic Object)
 [9] Import Hosts from CSV
-
 [Q] Quit
 
 Select an option:
 
- First Test
+Enter the number corresponding to the desired operation and follow the prompts provided by the script.
 
-Run the FMC connection test first.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-If the connection test succeeds, the computer is able to communicate with FMC using the configured credentials.
+__Requirements__
 
- Set Up the fmc Command
+The toolkit is intended for environments using Cisco Firepower Management Center (FMC) and its API.
 
-The repository includes a PowerShell (.ps1) script and a Windows batch (.bat) launcher.
+Recommended requirements:
 
-These are designed to make starting the toolkit much easier.
+Windows PowerShell
+Network connectivity to the FMC management interface
+Valid FMC API credentials
+Appropriate FMC permissions for the requested operation
+Access to any required CSV input files
+FMC API compatibility with the version being used
+For environments running FMC 7.4.x, verify that the API endpoints and object types used by the toolkit match the installed FMC release.
 
-Without the launcher, you would normally need to do something like:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-cd C:\Users\Username\fmc-automation
-.\venv\Scripts\Activate.ps1
-python <main-toolkit-script>.py
+__Authentication and Configuration__
 
-That's a lot to remember.
+Before using the toolkit, configure the FMC connection information required by the script.
 
-Instead, the launcher allows you to simply type:
+Depending on the implementation, this may include:
 
-fmc
+FMC Hostname / IP
+Username
+Password / API credentials
 
-from Command Prompt.
+Credentials should not be hard-coded into scripts or committed to source control.
 
- Install the Launcher
+Recommended practices include:
 
-Run the provided .ps1 setup script from the repository.
+Use secure credential handling.
+Avoid storing passwords in plain text.
+Do not commit credentials to Git.
+Use a dedicated FMC account with only the permissions required by the automation.
+Protect any configuration files containing authentication information.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+__CSV Workflows__
+Several toolkit functions use CSV files to simplify bulk operations.
+
+CSV files should be reviewed before importing them into FMC.
 
 For example:
 
-.\<launcher-script>.ps1
+Name,IP
+Example1,10.10.10.x
+Example2,10.10.10.x
+BExample3,10.10.10.x
 
-ℹ The exact .ps1 filename may change as the project is updated. Use the PowerShell launcher included in the repository.
+Before running an import:
 
-The setup script configures Windows so the .bat launcher can be found when you type fmc.
+Verify hostnames and IP addresses.
 
- Start the Toolkit
+Check for duplicate entries.
+Confirm the CSV column names match what the script expects.
+Review the resulting FMC objects.
+Test the resulting firewall configuration where appropriate.
 
-After installing the launcher:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Close Command Prompt and open a NEW Command Prompt window.
+__Safety Considerations__
 
-Then simply type:
+Some functions can make configuration changes to FMC.
 
-fmc
+In particular:
 
-Press Enter.
-
- The FMC Automation Toolkit should start.
-
-You should see the interactive menu.
-
- Everyday Usage
-
-Once the toolkit has been installed, using it should be extremely simple.
-
-Step 1
-
-Open Command Prompt.
-
-Step 2
-
-Type:
-
-fmc
-
-Step 3
-
-Press Enter.
-
-Step 4
-
-Choose the desired operation from the toolkit menu.
-
-That's it.
-
- You should not need to manually cd into the project directory every time you want to use the toolkit.
-
- Updating the Toolkit
-
-The toolkit is stored in GitHub, which means updates can be pulled down without reinstalling everything.
-
-When a new feature or bug fix is pushed to GitHub:
-
-1. Open PowerShell or Command Prompt.
-
-2. Go to the project:
-
-cd $HOME\fmc-automation
-
-3. Download the latest version:
-
-git pull
-
-4. If dependencies changed:
-
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-
-5. Start the toolkit:
-
-fmc
-
- Typical Update Workflow
-
-cd $HOME\fmc-automation
-git pull
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-
-Then:
-
-fmc
-
- Troubleshooting
-
- git is not recognized
-
-If you see:
-
-'git' is not recognized as an internal or external command
-
-Git is either not installed or its installation directory is not in Windows PATH.
-
-Fix
-
-Install Git for Windows, then close and reopen Command Prompt.
-
- python is not recognized
-
-If you see:
-
-'python' is not recognized as an internal or external command
-
-Python is either not installed or was not added to PATH.
-
-Fix
-
-Reinstall Python and make sure:
-
-Add Python to PATH
-
-is selected.
-
-Then close and reopen Command Prompt.
-
- PowerShell will not run the .ps1 file
-
-Check the current execution policies:
-
-Get-ExecutionPolicy -List
-
-If appropriate for your environment:
-
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-Then retry the launcher.
-
- On managed corporate computers, security policies may prevent this. Contact IT if necessary.
-
- fmc is not recognized
-
-If:
-
-fmc
-
-returns:
-
-'fmc' is not recognized as an internal or external command
-
-try these steps:
-
-1. Close Command Prompt
-
-Open a new Command Prompt window.
-
-2. Verify the launcher exists
-
-Make sure the .bat launcher is present.
-
-3. Run the PowerShell setup script again
-
-Use the launcher setup script from the repository.
-
-4. Check Windows PATH
-
-Run:
-
-echo %PATH%
-
-The directory containing the fmc.bat launcher should be included.
-
- FMC Connection Fails
-
-If the toolkit starts but cannot connect to FMC, check:
-
-FMC hostname/IP address
-
-Username
-
-Password
-
-FMC API permissions
-
-Network connectivity
-
-HTTPS/443 access
-
-.env configuration
-
-Firewall/ACL rules between the workstation and FMC
-
-You can test HTTPS connectivity with:
-
-Test-NetConnection <FMC_HOST> -Port 443
-
-If the connection succeeds, you should see:
-
-TcpTestSucceeded : True
-
-🗂️ Repository Structure
-
-The project may look similar to:
-
-fmc-automation/
-│
-├── 📄 create_rules.py
-├── 📄 export_devices.py
-├── 📄 find_unused_objects.py
-├── 📄 get_objects.py
-│
-├── 📄 <object-management-script>.py
-├── 📄 <main-toolkit-script>.py
-│
-├── ⚙️ <launcher>.ps1
-├── ⚙️ <launcher>.bat
-│
-├── 🔐 .env.example
-├── 🚫 .gitignore
-├── 📦 requirements.txt
-└── 📖 README.md
-
-The exact filenames may change as the project develops.
-
-🔐 Security & Change Management
-
-This toolkit can make real configuration changes to a production firewall management system.
-
-Please use normal organizational change-control procedures.
-
+Creating access-control rules can affect traffic.
+Importing objects changes the FMC configuration.
+Blocking malicious IPs can immediately affect connectivity.
+Removing or modifying objects can have downstream effects on rules.
 Before making production changes:
+Review the intended change.
 
-✅ Verify the correct FMC
+Confirm the target FMC.
 
-✅ Review the intended configuration change
+Verify object names and IP addresses.
+Confirm the correct policy/rule context.
+Test changes in a controlled environment when possible.
+Maintain appropriate configuration backups or change records.
+The toolkit should be treated as an administrative automation tool, not as a replacement for change-control procedures.
 
-✅ Verify object names and IP addresses
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-✅ Review CSV files before importing them
+__Suggested Workflow__
 
-✅ Review newly created objects and groups
+A typical workflow for administering FMC with the toolkit is:
 
-✅ Review newly created rules
+                    +----------------------+
+                    | Start Toolkit        |
+                    +----------+-----------+
+                               |
+                               v
+                    +----------------------+
+                    | Test FMC Connection  |
+                    +----------+-----------+
+                               |
+                               v
+                    +----------------------+
+                    | Select Operation     |
+                    +----------+-----------+
+                               |
+          +--------------------+--------------------+
+          |                    |                    |
+          v                    v                    v
+    Rule Management       Object Management    Threat Management
+          |                    |                    |
+          v                    v                    v
+    Search / Audit       Import / Inspect      Block / Unblock
+          |                    |                    |
+          +--------------------+--------------------+
+                               |
+                               v
+                    +----------------------+
+                    | Review FMC Changes   |
+                    +----------------------+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+__Disclaimer:__
 
-✅ Use appropriate FMC permissions
+This toolkit is an administrative automation utility for Cisco FMC environments. Changes made through the toolkit can affect firewall behavior and network connectivity.
+Always verify the target FMC and review configuration changes before applying them to production.
 
-✅ Protect API credentials
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-✅ Keep appropriate backups/change records
-
- A mistake made through automation can potentially affect many firewall configurations at once. Always verify the target environment before making changes.
-
- Credential Security
-
-Never put passwords directly into Python source code.
-
-Use the .env configuration instead.
-
-Never commit:
-
-.env
-
-to GitHub.
-
-The .gitignore file should prevent this from happening.
-
-If credentials are accidentally committed to GitHub, rotate the affected credentials immediately.
-
- First-Time Installation Checklist
-
-Use this checklist when installing the toolkit on a new computer:
-
-☐ Install Git
-☐ Install Python 3.x
-☐ Clone the GitHub repository
-☐ cd into the fmc-automation directory
-☐ Create the Python virtual environment
-☐ Activate the virtual environment
-☐ Install Python dependencies
-☐ Create/configure the .env file
-☐ Test the FMC connection
-☐ Run the launcher setup script
-☐ Open a NEW Command Prompt
-☐ Type: fmc
-☐ Confirm the toolkit launches
-
- Quick Start
-
-For someone who already has Git and Python installed, the setup is approximately:
-
-git clone https://github.com/YOUR_GITHUB_USERNAME/fmc-automation.git
-cd fmc-automation
-
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-
-pip install -r requirements.txt
-
-# Configure .env
-
-# Run the launcher setup script
-.\<launcher-script>.ps1
-
-Then open a new Command Prompt:
-
-fmc
-
- After Installation
-
-Once everything is configured, the normal workflow is simply:
-
-┌─────────────────────────┐
-│ Open Command Prompt     │
-└────────────┬────────────┘
-             │
-             ▼
-┌─────────────────────────┐
-│ Type: fmc               │
-└────────────┬────────────┘
-             │
-             ▼
-┌─────────────────────────┐
-│ FMC Automation Toolkit  │
-│ launches                 │
-└────────────┬────────────┘
-             │
-             ▼
-┌─────────────────────────┐
-│ Select an operation     │
-└─────────────────────────┘
-
-No need to manually navigate to the project folder every time.
-
- Summary
-
-The Cisco FMC REST API Automation Toolkit provides a centralized way to automate common FMC administration tasks.
-
-It combines:
-
-Python + FMC REST API + CSV workflows + PowerShell + Windows launcher
-
-to provide a simple administrator experience:
-
-Open CMD → type fmc → choose what you want to do.
-
- License
+__License__
 
 Add the appropriate license and/or internal-use statement for your organization here.
 
- Maintainer
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Cisco FMC REST API Automation Toolkit
+__Maintainer__
 
-For issues or enhancements, include:
+FMC Automation Toolkit
 
-Toolkit function being used
+For issues or enhancements, document the requested change and include relevant error output, FMC version information, and the toolkit operation that produced the issue.
 
-Error message/output
-
-FMC version
-
-Python version
-
-Windows version
-
-Relevant configuration details
-
- Never include passwords, API tokens, or other secrets when reporting an issu
