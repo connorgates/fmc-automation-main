@@ -95,7 +95,7 @@ def audit_ip_rules():
                 print("-" * 65)
 
     if matches_found == 0:
-        print("[-] No rules were found containing 128.226.157.31 or 128.226.157.33.")
+        print("[-] No rules were found containing x.x.x.x or x.x.x.x.")
 
 if __name__ == "__main__":
     audit_ip_rules()
