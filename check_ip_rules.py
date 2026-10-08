@@ -10,9 +10,9 @@ FMC_HOST = os.getenv("FMC_HOST")
 FMC_USER = os.getenv("FMC_USER")
 FMC_PASS = os.getenv("FMC_PASS")
 
-TARGET_IPS = ["128.226.157.31", "128.226.157.33", "128.226.157.35"]
-REF_IPS = ["128.226.157.31", "128.226.157.33"]
-CHECK_IP = "128.226.157.35"
+TARGET_IPS = ["x.x.x.x", "x.x.x.x", "x.x.x.x"]
+REF_IPS = ["x.x.x.x", "x.x.x.x"]
+CHECK_IP = "x.x.x.x"
 
 def get_auth():
     url = f"https://{FMC_HOST}/api/fmc_platform/v1/auth/generatetoken"
