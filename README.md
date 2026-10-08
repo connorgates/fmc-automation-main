@@ -1,98 +1,178 @@
 Cisco FMC REST API Automation Toolkit
 
-A Python-based network automation suite for Cisco Secure Firewall Management Center (FMC). This project streamlines network operations, compliance auditing, inventory tracking, network-object management, and rule provisioning through the FMC REST API.
+A Python-based network automation suite for Cisco Secure Firewall Management Center (FMC).
 
-The toolkit is designed to make common FMC administrative tasks repeatable and easier to perform without manually navigating through the FMC web interface.
+This toolkit is designed to make common FMC administration tasks faster, easier, and more repeatable by using the FMC REST API instead of manually performing every task through the FMC web interface.
 
-Capabilities
+It can be used for:
 
-The toolkit currently provides automation for:
+ Device inventory and health reporting
 
-Device Health & Inventory Exporter (export_devices.py)
+ Unused object auditing
 
-Extracts FTD firewall information from FMC.
+ Network object and object-group management
 
-Exports device names, models, management IP addresses, software versions, and health information to CSV.
+ Access-control rule creation
 
-Unused Object Audit (find_unused_objects.py)
+ CSV-based bulk operations
 
-Searches FMC for network objects that are not currently referenced.
+ General FMC administration and automation
 
-Helps identify objects that may be candidates for cleanup or review.
+ What Does This Toolkit Do?
 
-Network Object Exporter (get_objects.py)
+The toolkit provides several automation functions for managing FMC.
 
-Exports FMC network objects into structured CSV data.
+ Device Health & Inventory
 
-Supports hosts, subnets, ranges, and network object groups.
+export_devices.py
 
-Network Object & Group Management
+Exports information about managed FTD devices from FMC.
 
-Creates network objects and object groups in FMC.
+Information can include:
 
-Useful for adding hosts, networks, IP ranges, and groups without manually creating each object through the FMC GUI.
+Device name
 
-Batch Rule Deployment (create_rules.py)
+FTD model
 
-Reads rule information from CSV templates.
+Management IP address
 
-Resolves FTD devices, access-control policies, and security zones.
+Software version
 
-Creates FMC access-control rules through the REST API.
+Health/status information
 
-Interactive FMC Toolkit
+The information is exported into CSV reports, making it easy to review or use in other administrative workflows.
 
-Provides a menu-driven interface for common FMC automation tasks.
+ Unused Object Audit
 
-Additional functions can be added to the toolkit as the project grows.
+find_unused_objects.py
 
-fmc Command Launcher
+Searches FMC for network objects that are not currently being referenced.
 
-A Windows launcher is included so the toolkit can be started from Command Prompt by simply typing:
+This can help identify:
 
-fmc
+Old objects
 
-The launcher starts the toolkit without requiring the user to manually navigate to the project directory every time.
+Objects created for previous projects
 
-Requirements
+Unused hosts
 
-The toolkit is intended to run on a Windows workstation used to administer Cisco FMC.
+Unused networks
 
-You will need:
+Objects that may be candidates for cleanup
 
-Windows 10 or Windows 11
+ Important: An object being identified as unused does not automatically mean it should be deleted. Always review the results before removing configuration from FMC.
 
-Internet/network access to the FMC management interface
+ Network Object Exporter
 
-A GitHub account with access to this repository
+get_objects.py
 
-Git for Windows
+Exports FMC network objects into structured CSV files.
+
+Supported object types can include:
+
+Host objects
+
+Subnets
+
+IP ranges
+
+Network objects
+
+Network object groups
+
+This is useful for inventory, auditing, documentation, and troubleshooting.
+
+ Network Object & Group Management
+
+The toolkit can also create network objects and network object groups directly in FMC.
+
+This allows administrators to add objects without manually navigating through the FMC GUI for every entry.
+
+For example:
+
+Server Name       IP Address
+-----------       ----------
+WEB01             10.20.10.15
+WEB02             10.20.10.16
+DB01              10.20.20.10
+
+These can then be created in FMC through the automation workflow.
+
+Object groups can also be created to organize multiple objects together.
+
+ Batch Rule Deployment
+
+create_rules.py
+
+Creates FMC Access Control Rules using information provided through CSV templates.
+
+The script can resolve:
+
+FTD device names
+
+Access-control policies
+
+Security zones
+
+Other required FMC identifiers
+
+This makes it possible to prepare firewall rules in a spreadsheet and then automatically deploy them to FMC.
+
+ Requirements
+
+Before installing the toolkit, the computer should have:
+
+Requirement
+
+Purpose
+
+Windows 10/11
+
+Operating system
+
+Git
+
+Downloads and updates the toolkit
 
 Python 3.x
 
-An FMC account with the required API permissions
+Runs the automation scripts
 
 PowerShell
 
+Runs the launcher/setup scripts
+
 Command Prompt
 
-Important: The computer running the toolkit must be able to communicate with the FMC over HTTPS.
+Used to launch the fmc command
 
-Initial Installation
+Network access to FMC
 
-The following instructions are for installing the toolkit on a new Windows computer.
+Allows the toolkit to communicate with FMC
 
-1. Install Git
+FMC account
+
+Provides API access
+
+ You do not need to understand Python to use the finished toolkit. Once the initial setup is complete, the normal workflow is simply opening Command Prompt and typing fmc.
+
+ Initial Installation
+
+The following instructions assume this is the first time the toolkit is being installed on the computer.
+
+1️ Install Git
+
+Git is used to download the toolkit from GitHub and later retrieve updates.
 
 If Git is not already installed:
 
-Download and install Git for Windows.
+Install Git for Windows.
 
-Use the default installation options unless your organization's IT policies require something different.
+Use the default installation options.
 
-After installation, open Command Prompt or PowerShell.
+Open Command Prompt after installation.
 
-Verify Git is installed:
+Verify Git is working:
 
 git --version
 
@@ -100,17 +180,19 @@ You should see something similar to:
 
 git version 2.x.x
 
-2. Install Python
+ If a Git version is displayed, Git is installed correctly.
 
-If Python is not already installed:
+2️ Install Python
+
+The toolkit uses Python to communicate with the FMC REST API.
 
 Install Python 3.x for Windows.
 
-During installation, make sure to select:
+During installation, make sure the following option is enabled:
 
-Add Python to PATH
+ Add Python to PATH
 
-Complete the installation.
+After installation, open a new Command Prompt window.
 
 Verify Python:
 
@@ -120,17 +202,21 @@ You should see something similar to:
 
 Python 3.x.x
 
-If python is not recognized, close and reopen Command Prompt/PowerShell after installing Python.
+ If Windows says that python is not recognized, close Command Prompt and open it again.
 
-3. Clone the GitHub Repository
+3️ Download the Toolkit from GitHub
 
-Choose where you want to keep the toolkit.
+This is where Git comes in.
 
-For example, to keep it in your user profile:
+Open Command Prompt or PowerShell.
+
+First, choose where you want to store the toolkit.
+
+For example:
 
 cd $HOME
 
-Then clone the repository:
+Then download the repository:
 
 git clone https://github.com/YOUR_GITHUB_USERNAME/fmc-automation.git
 
@@ -138,31 +224,27 @@ Replace:
 
 YOUR_GITHUB_USERNAME
 
-with the actual GitHub username/organization that owns the repository.
+with the GitHub account or organization that owns the repository.
 
 For example:
 
-git clone https://github.com/myusername/fmc-automation.git
+git clone https://github.com/mycompany/fmc-automation.git
 
-Git will download the project to a folder named:
+Git will download the project into a folder named:
 
 fmc-automation
 
-4. Enter the Toolkit Directory
+4️ Enter the Toolkit Folder
 
-After cloning the repository, change into the project directory:
+Now move into the folder you just downloaded:
 
 cd fmc-automation
 
-You can verify that you are in the correct location with:
-
-dir
-
-You should see the project files, such as the Python scripts, PowerShell files, batch launcher, and README.
-
 What does cd mean?
 
-cd means Change Directory.
+cd = Change Directory
+
+Think of it like opening a folder in File Explorer.
 
 For example:
 
@@ -170,224 +252,256 @@ cd fmc-automation
 
 means:
 
-"Move into the fmc-automation folder."
+"Go into the fmc-automation folder."
 
-This is important because the commands that follow need to be run from the toolkit's directory.
+You can confirm you are in the correct folder with:
 
-5. Create a Python Virtual Environment
+dir
 
-A virtual environment keeps the toolkit's Python packages separate from other Python programs installed on the computer.
+You should see the toolkit files.
 
-From inside the fmc-automation directory, run:
+5️ Create the Python Virtual Environment
+
+The toolkit uses a virtual environment so its Python packages do not interfere with other Python applications on the computer.
+
+From inside the fmc-automation directory:
 
 python -m venv venv
 
-This creates a folder called:
+This creates:
 
-venv
+fmc-automation
+│
+├── venv
+├── create_rules.py
+├── export_devices.py
+├── ...
+└── README.md
 
-inside the project.
+ You normally only need to create the virtual environment once.
 
-6. Activate the Virtual Environment
+6️ Activate the Virtual Environment
 
-In PowerShell:
+In PowerShell, run:
 
 .\venv\Scripts\Activate.ps1
 
-After activation, the command prompt should show something similar to:
+You should now see:
+
+(venv)
+
+at the beginning of your command prompt.
+
+For example:
 
 (venv) PS C:\Users\Username\fmc-automation>
 
-The (venv) indicates that the toolkit's Python environment is active.
+The (venv) tells you that the toolkit's Python environment is active.
 
-If PowerShell prevents the activation script from running, you may need to allow locally created PowerShell scripts:
+ PowerShell Execution Policy
+
+If PowerShell refuses to run the activation script, you may see an error saying that script execution is disabled.
+
+For a normal user installation, you may be able to run:
 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-Then run:
+Then try again:
 
 .\venv\Scripts\Activate.ps1
 
-If your organization's security policies restrict PowerShell execution policies, contact your IT administrator rather than changing the policy.
+ If this is a managed company computer and PowerShell execution policies are controlled by IT, do not bypass the organization's policy. Contact your IT administrator if necessary.
 
-7. Install Python Dependencies
+7️ Install the Required Python Packages
 
-With the virtual environment activated, install the required packages:
+With the virtual environment activated, install the packages required by the toolkit.
 
-pip install requests python-dotenv
-
-If the repository contains a requirements.txt file, use that instead:
+If the repository contains a requirements.txt file, run:
 
 pip install -r requirements.txt
 
-Using requirements.txt is preferred because it installs the dependencies defined by the project.
+This is the preferred method because it installs the dependencies defined by the project.
 
-You can verify the installed packages with:
+If there is no requirements.txt, install the required packages directly:
+
+pip install requests python-dotenv
+
+Verify the installed packages:
 
 pip list
 
-8. Configure FMC Credentials
+ 8️ Configure FMC Credentials
 
-The toolkit requires FMC connection information to communicate with the FMC REST API.
+The toolkit needs information about the FMC it will connect to.
 
-The project uses environment variables / a .env configuration rather than placing credentials directly inside the Python scripts.
+The project uses a .env file so credentials do not need to be written directly into the Python scripts.
 
-A typical configuration looks similar to:
+A configuration may look similar to:
 
 FMC_HOST=your-fmc-hostname
 FMC_USERNAME=your-username
 FMC_PASSWORD=your-password
 
-The exact variable names should match the .env template included with the repository.
+The exact variable names must match the .env.example file included with the repository.
 
 If the repository contains:
 
 .env.example
 
-copy it to:
-
-.env
-
-For example:
+copy it:
 
 copy .env.example .env
 
-Then edit .env and enter the appropriate FMC information.
+Then open .env and enter the appropriate FMC information.
 
-Important
+ IMPORTANT — Protect Your Credentials
 
 Never commit .env to GitHub.
 
-The .env file contains credentials and should remain local to the computer running the toolkit.
+The .env file contains sensitive information and should remain local to the computer running the toolkit.
 
-The repository should contain .gitignore rules that prevent .env from being committed.
+The repository should include .env in .gitignore.
 
-9. Test the Toolkit
+ 9️ Test the Toolkit
 
-Before setting up the fmc command, test the toolkit directly.
+Before setting up the fmc command, test that the toolkit itself works.
 
-From the project directory:
-
-python <main-toolkit-script>.py
-
-Replace <main-toolkit-script>.py with the actual main Python script included in the repository.
-
-The toolkit should start and display its interactive menu.
+From the project directory, run the main toolkit Python script.
 
 For example:
 
-========================================
-        FMC AUTOMATION TOOLKIT
-========================================
+python <main-toolkit-script>.py
+
+Replace <main-toolkit-script>.py with the actual launcher/main Python file in the repository.
+
+The toolkit should display its menu.
+
+For example:
+
+===========================================
+          FMC AUTOMATION TOOLKIT
+===========================================
 
 [1] Test FMC Connection
 [2] Search/Dump Access Control Rules
 [3] Audit IPs in Rules
-...
+[4] Export FMC Devices
+[5] Find Unused Objects
+[6] Get Full Objects
+[7] Create Rule from CSV
+[8] Block/Unblock/View Malicious IP
+[9] Import Hosts from CSV
+
 [Q] Quit
 
 Select an option:
+
+ First Test
 
 Run the FMC connection test first.
 
 If the connection test succeeds, the computer is able to communicate with FMC using the configured credentials.
 
-10. Install the fmc Command
+ Set Up the fmc Command
 
-The repository includes a Windows .bat launcher and a PowerShell (.ps1) launcher.
+The repository includes a PowerShell (.ps1) script and a Windows batch (.bat) launcher.
 
-These files are used to make starting the toolkit easier.
+These are designed to make starting the toolkit much easier.
 
-Instead of doing this every time:
+Without the launcher, you would normally need to do something like:
 
 cd C:\Users\Username\fmc-automation
 .\venv\Scripts\Activate.ps1
 python <main-toolkit-script>.py
 
-the goal is to simply type:
+That's a lot to remember.
+
+Instead, the launcher allows you to simply type:
 
 fmc
 
 from Command Prompt.
 
-Installing the launcher
+ Install the Launcher
 
-Use the provided PowerShell setup/launcher script included in the repository.
-
-From the project directory, run the .ps1 setup script according to its filename.
+Run the provided .ps1 setup script from the repository.
 
 For example:
 
 .\<launcher-script>.ps1
 
-The launcher should configure the Windows environment so the included .bat file can be found when fmc is entered from Command Prompt.
+ℹ The exact .ps1 filename may change as the project is updated. Use the PowerShell launcher included in the repository.
 
-Note: The exact .ps1 filename may change as the project is updated. Use the .ps1 file included in the current repository.
+The setup script configures Windows so the .bat launcher can be found when you type fmc.
 
-11. Start the Toolkit
+ Start the Toolkit
 
-After the launcher has been installed, open a new Command Prompt window.
+After installing the launcher:
 
-Type:
+Close Command Prompt and open a NEW Command Prompt window.
+
+Then simply type:
 
 fmc
 
 Press Enter.
 
-The toolkit should launch.
+ The FMC Automation Toolkit should start.
 
-You should no longer need to manually cd into the project directory each time.
+You should see the interactive menu.
 
-Everyday Usage
+ Everyday Usage
 
-Once the initial installation is complete, starting the toolkit should be as simple as:
+Once the toolkit has been installed, using it should be extremely simple.
+
+Step 1
 
 Open Command Prompt.
 
+Step 2
+
 Type:
 
 fmc
 
+Step 3
+
 Press Enter.
 
-Select the desired toolkit function.
+Step 4
 
-Example:
+Choose the desired operation from the toolkit menu.
 
-C:\Users\Username>fmc
+That's it.
 
-========================================
-        FMC AUTOMATION TOOLKIT
-========================================
+ You should not need to manually cd into the project directory every time you want to use the toolkit.
 
-Select an option:
+ Updating the Toolkit
 
-Updating the Toolkit
+The toolkit is stored in GitHub, which means updates can be pulled down without reinstalling everything.
 
-The toolkit is maintained in GitHub.
+When a new feature or bug fix is pushed to GitHub:
 
-When new features or fixes are added, update the local copy with Git.
+1. Open PowerShell or Command Prompt.
 
-Open Command Prompt or PowerShell and navigate to the project directory:
+2. Go to the project:
 
 cd $HOME\fmc-automation
 
-Then run:
+3. Download the latest version:
 
 git pull
 
-Git will download the latest version of the toolkit.
-
-If new Python dependencies were added, update them with:
+4. If dependencies changed:
 
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 
-Then the fmc command can be used normally.
+5. Start the toolkit:
 
-Example Update Workflow
+fmc
 
-A normal update may look like:
+ Typical Update Workflow
 
 cd $HOME\fmc-automation
 git pull
@@ -398,45 +512,53 @@ Then:
 
 fmc
 
-Troubleshooting
+ Troubleshooting
 
-git is not recognized
+ git is not recognized
 
 If you see:
 
 'git' is not recognized as an internal or external command
 
-Git is either not installed or its installation directory is not in PATH.
+Git is either not installed or its installation directory is not in Windows PATH.
 
-Install Git for Windows and reopen Command Prompt.
+Fix
 
-python is not recognized
+Install Git for Windows, then close and reopen Command Prompt.
+
+ python is not recognized
 
 If you see:
 
 'python' is not recognized as an internal or external command
 
-Install Python and make sure:
+Python is either not installed or was not added to PATH.
+
+Fix
+
+Reinstall Python and make sure:
 
 Add Python to PATH
 
-was selected during installation.
+is selected.
 
-Close and reopen Command Prompt afterward.
+Then close and reopen Command Prompt.
 
-PowerShell will not run the .ps1 file
+ PowerShell will not run the .ps1 file
 
-If PowerShell reports that script execution is disabled, check the current execution policy:
+Check the current execution policies:
 
 Get-ExecutionPolicy -List
 
-For a normal personal/user installation, the project may be able to use:
+If appropriate for your environment:
 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-If your organization's policies prevent this, contact IT.
+Then retry the launcher.
 
-fmc is not recognized
+ On managed corporate computers, security policies may prevent this. Contact IT if necessary.
+
+ fmc is not recognized
 
 If:
 
@@ -446,129 +568,145 @@ returns:
 
 'fmc' is not recognized as an internal or external command
 
-first try closing and reopening Command Prompt.
+try these steps:
 
-If it still does not work:
+1. Close Command Prompt
 
-Verify the .bat launcher exists.
+Open a new Command Prompt window.
 
-Verify the launcher installation/setup script was run.
+2. Verify the launcher exists
 
-Check that the directory containing the .bat file is in the user's Windows PATH.
+Make sure the .bat launcher is present.
 
-Confirm the launcher points to the correct toolkit directory and Python environment.
+3. Run the PowerShell setup script again
 
-You can inspect PATH with:
+Use the launcher setup script from the repository.
+
+4. Check Windows PATH
+
+Run:
 
 echo %PATH%
 
-FMC connection fails
+The directory containing the fmc.bat launcher should be included.
 
-Check:
+ FMC Connection Fails
 
-FMC hostname/IP address.
+If the toolkit starts but cannot connect to FMC, check:
 
-FMC is reachable from the computer.
+FMC hostname/IP address
 
-HTTPS access to FMC is available.
+Username
 
-Username and password are correct.
+Password
 
-The FMC account has the required API permissions.
+FMC API permissions
 
-.env contains the correct values.
+Network connectivity
 
-No firewall or network ACL is blocking access.
+HTTPS/443 access
 
-You can test basic connectivity with:
+.env configuration
 
-ping <FMC_HOST>
+Firewall/ACL rules between the workstation and FMC
 
-and, where appropriate:
+You can test HTTPS connectivity with:
 
 Test-NetConnection <FMC_HOST> -Port 443
 
-Security Considerations
+If the connection succeeds, you should see:
 
-This toolkit can make changes to a production firewall management system.
+TcpTestSucceeded : True
 
-Use appropriate change-control procedures before making production changes.
+🗂️ Repository Structure
 
-In particular:
-
-Protect FMC credentials.
-
-Do not commit .env files to GitHub.
-
-Do not store passwords directly in Python source code.
-
-Use an FMC account with only the permissions required by the toolkit.
-
-Review CSV files before importing them.
-
-Review newly created objects, groups, and rules.
-
-Verify the target FMC before making changes.
-
-Keep appropriate backups and change records.
-
-Test significant changes before applying them to production.
-
-Repository Structure
-
-The project may contain files similar to:
+The project may look similar to:
 
 fmc-automation/
 │
-├── create_rules.py
-├── export_devices.py
-├── find_unused_objects.py
-├── get_objects.py
+├── 📄 create_rules.py
+├── 📄 export_devices.py
+├── 📄 find_unused_objects.py
+├── 📄 get_objects.py
 │
-├── <object-management-script>.py
-├── <main-toolkit-script>.py
+├── 📄 <object-management-script>.py
+├── 📄 <main-toolkit-script>.py
 │
-├── <launcher>.ps1
-├── <launcher>.bat
+├── ⚙️ <launcher>.ps1
+├── ⚙️ <launcher>.bat
 │
-├── .env.example
-├── .gitignore
-├── requirements.txt
-└── README.md
+├── 🔐 .env.example
+├── 🚫 .gitignore
+├── 📦 requirements.txt
+└── 📖 README.md
 
-The exact filenames may change as the toolkit is developed.
+The exact filenames may change as the project develops.
 
-Recommended First-Time Installation Checklist
+🔐 Security & Change Management
 
-For someone installing the toolkit for the first time:
+This toolkit can make real configuration changes to a production firewall management system.
 
-[ ] Install Git
-[ ] Install Python 3.x
-[ ] Clone the GitHub repository
-[ ] cd into the fmc-automation directory
-[ ] Create the Python virtual environment
-[ ] Activate the virtual environment
-[ ] Install Python dependencies
-[ ] Create/configure the .env file
-[ ] Test the FMC connection
-[ ] Run the launcher setup script
-[ ] Open a NEW Command Prompt
-[ ] Type: fmc
-[ ] Confirm the toolkit launches
+Please use normal organizational change-control procedures.
 
-After that, normal use should only require:
+Before making production changes:
 
-Open CMD
-   |
-   v
-Type: fmc
-   |
-   v
-Use the toolkit
+✅ Verify the correct FMC
 
-Quick Start
+✅ Review the intended configuration change
 
-For an experienced user, the initial setup is approximately:
+✅ Verify object names and IP addresses
+
+✅ Review CSV files before importing them
+
+✅ Review newly created objects and groups
+
+✅ Review newly created rules
+
+✅ Use appropriate FMC permissions
+
+✅ Protect API credentials
+
+✅ Keep appropriate backups/change records
+
+ A mistake made through automation can potentially affect many firewall configurations at once. Always verify the target environment before making changes.
+
+ Credential Security
+
+Never put passwords directly into Python source code.
+
+Use the .env configuration instead.
+
+Never commit:
+
+.env
+
+to GitHub.
+
+The .gitignore file should prevent this from happening.
+
+If credentials are accidentally committed to GitHub, rotate the affected credentials immediately.
+
+ First-Time Installation Checklist
+
+Use this checklist when installing the toolkit on a new computer:
+
+☐ Install Git
+☐ Install Python 3.x
+☐ Clone the GitHub repository
+☐ cd into the fmc-automation directory
+☐ Create the Python virtual environment
+☐ Activate the virtual environment
+☐ Install Python dependencies
+☐ Create/configure the .env file
+☐ Test the FMC connection
+☐ Run the launcher setup script
+☐ Open a NEW Command Prompt
+☐ Type: fmc
+☐ Confirm the toolkit launches
+
+ Quick Start
+
+For someone who already has Git and Python installed, the setup is approximately:
 
 git clone https://github.com/YOUR_GITHUB_USERNAME/fmc-automation.git
 cd fmc-automation
@@ -587,17 +725,55 @@ Then open a new Command Prompt:
 
 fmc
 
-License
+ After Installation
+
+Once everything is configured, the normal workflow is simply:
+
+┌─────────────────────────┐
+│ Open Command Prompt     │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Type: fmc               │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ FMC Automation Toolkit  │
+│ launches                 │
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Select an operation     │
+└─────────────────────────┘
+
+No need to manually navigate to the project folder every time.
+
+ Summary
+
+The Cisco FMC REST API Automation Toolkit provides a centralized way to automate common FMC administration tasks.
+
+It combines:
+
+Python + FMC REST API + CSV workflows + PowerShell + Windows launcher
+
+to provide a simple administrator experience:
+
+Open CMD → type fmc → choose what you want to do.
+
+ License
 
 Add the appropriate license and/or internal-use statement for your organization here.
 
-Maintainer
+ Maintainer
 
 Cisco FMC REST API Automation Toolkit
 
-For issues or enhancements, document the requested change and include:
+For issues or enhancements, include:
 
-The toolkit function being used
+Toolkit function being used
 
 Error message/output
 
@@ -607,4 +783,6 @@ Python version
 
 Windows version
 
-Relevant configuration details (excluding passwords or other secrets)
+Relevant configuration details
+
+ Never include passwords, API tokens, or other secrets when reporting an issu
